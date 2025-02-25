@@ -1,7 +1,12 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()], // Use plugins here
+  build: {
+    rollupOptions: {
+      external: ['react-router-dom'], // Keep external dependencies here
+    },
+  },
 })
