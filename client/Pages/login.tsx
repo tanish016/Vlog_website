@@ -16,7 +16,7 @@ const Login = () => {
 
       <div className="bg-gray-300 p-10 rounded-md shadow-2xl border-2 border-gray-300 ">
 
-      <h1 className="text-3xl font-bold text-center pt-6 pb-10">
+      <h1 className="text-3xl font-bold text-center pt-6 pb-10 underline cursor-default">
         Login
         </h1>
 
