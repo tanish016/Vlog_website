@@ -7,6 +7,7 @@ import Signup from '../Pages/signup'
 import Navbar from '../components/nabvar'
 import Home from '../Pages/Home';
 import Footer from '../components/footer';
+import Create_blog from '../Pages/create_blog';
 // import Blogs from '../Pages/Blog';
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/create_blog" element={<Create_blog />} />
       </Routes>
       {!hideNavbarAndFooter && <Footer />}
     </div>

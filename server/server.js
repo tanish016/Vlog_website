@@ -69,6 +69,19 @@ app.post('/api/login',async (req,res)=>{
       }
 });
 
+app.post('/api/create_blog', (req, res) => {
+  const { title, content, author, date, image } = req.body;
+  const blog = { title, content, author, date, image };
+  const blogCollection = dbName.collection('blogs');
+    blogCollection.insertOne(blog, (err
+        , result) => {
+            if (err) {
+                return res.status(500).json({ message: 'Failed to create blog' });
+                }
+                return res.status(201).json({ message: 'Blog created successfully' });
+                });
+ });
+
 app.listen(port, () => {
     console.log('Your Server is running');
     });

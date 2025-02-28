@@ -1,6 +1,7 @@
 import React from "react";
 import Bg_vedio from '../vedio/winter-town-buildings.mp4';
 import image from '../Images/Japan.jpg';
+import { Link } from 'react-router-dom';
 
 const home = () =>{
     const today=new Date();
@@ -21,7 +22,9 @@ const home = () =>{
 
                 
                 <button className="border-2 rounded-2xl w-30 p-3 mt-4 font-bold bg-red-800  hover:bg-blue-500">
+                <Link to="/create_blog">
                     Create Blog
+                    </Link>
                 </button>
                 
             </div>
@@ -56,8 +59,8 @@ const home = () =>{
 
           {/*All Post in a grid*/}
           <div>
-            <h1 className="text-2xl font-bold text-center mt-9 hover:text-gray-800 cursor-default">
-                All Post 
+            <h1 className="text-2xl font-bold text-center mt-9 hover:text-gray-800 cursor-default underline m-10">
+                Recent Posts!
                 </h1>
           </div>
         </div>
