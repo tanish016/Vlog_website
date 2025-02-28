@@ -1,14 +1,34 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const Navigate = useNavigate();
+
+
+  const handle_login = async () => {  
+    try {
+           let resp= await axios.post('/api/login', {email, password});
+           resp=resp.data;
+           if(resp.status){
+            Navigate("/");
+           }
+           else
+           {
+            alert("Invalid email or password");
+           }
+    }catch (error) {
+      alert("server error");
+      console.log(error);
+  }
+};
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
+    console.log(email, password);
   };
 
   return (
@@ -20,7 +40,7 @@ const Login = () => {
         Login
         </h1>
 
-      <form className="flex flex-col gap-4 items-center p-3"onSubmit={handleSubmit}>
+      <form className="flex flex-col gap-4 items-center p-3" onSubmit={handleSubmit}>
 
         <label 
           htmlFor="email" 
@@ -31,6 +51,7 @@ const Login = () => {
         <input 
           type="text" 
           placeholder="Email" 
+          name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="p-2 border-2 rounded-md hover:bg-gray-200 w-100"
@@ -44,6 +65,7 @@ const Login = () => {
 
         <input 
           type="password" 
+          name="password"
           placeholder="Password" 
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -52,6 +74,7 @@ const Login = () => {
 
         <button 
           type="submit"
+          onClick={handle_login}
           className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
         >
           Login
@@ -69,8 +92,8 @@ const Login = () => {
     </div>
   </div>
   )
-};
+
+ }
 
 export default Login;
-
 

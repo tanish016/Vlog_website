@@ -1,4 +1,5 @@
 import React from 'react';
+// import { Link } from 'react-router-dom';
 const Navbar = () => {
 
     return (
@@ -16,7 +17,7 @@ const Navbar = () => {
                             Home
                         </p>
                         <p className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium cursor-pointer">
-                            Blogs
+                         Blog
                         </p>
                         <p className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium cursor-pointer">
                             About

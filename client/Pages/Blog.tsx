@@ -1,9 +1,9 @@
 import React from "react";
 
-const Blog_page=()=>{
+const Blogs=()=>{
     return (
-        <h1> All Blogs</h1>
+        <h1 className="text-2xl font-bold"> All Blogs</h1>
     )
 }
 
-export default Blog_page;
+export default Blogs;
