@@ -1,17 +1,37 @@
 const exores = require('express');
 const dotenv = require('dotenv');
-dotenv.config();
 const app = exores();
 const bodyParser = require("body-parser");
 const { mongoConnect, dbName } = require("./db_conf");
+const multer=require('multer');
+
 mongoConnect();
+dotenv.config();
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 const port = process.env.PORT;
 
+const date=new Date();
+const dateStr=date.toDateString();
+
+//multer 
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/')
+    }
+    ,
+    filename: (req, file, cb) => {
+        cb(null, dateStr+ '-' + file.originalname);
+    }
+    });
+    const upload = multer({ storage: storage });
+
+
 app.get('/api/data', (req, res) => {
     res.send('Hello World');
     });
+
 
 app.post('/api/signup',async (req,res)=>{
     try{
@@ -46,6 +66,7 @@ app.post('/api/signup',async (req,res)=>{
     return res.status(500).json({message: 'Internal server error'});
     }
 });
+
   
 app.post('/api/login',async (req,res)=>{
     try {
@@ -69,17 +90,30 @@ app.post('/api/login',async (req,res)=>{
       }
 });
 
-app.post('/api/create_blog', (req, res) => {
-  const { title, content, author, date, image } = req.body;
-  const blog = { title, content, author, date, image };
-  const blogCollection = dbName.collection('blogs');
+
+
+app.post('/api/create_blog', upload.single('image'), async (req, res) => {
+    try{
+  const { title, content, author, date} = req.body;
+  const image = req.file? req.file.path : null;
+  if (!title || !content || !author || !date) {
+    return res.status(400).json({ message: 'All fields are required' });
+}
+const blog = { title, content, author, date, image };
+  const blogCollection = dbName.collection('blog');
     blogCollection.insertOne(blog, (err
         , result) => {
             if (err) {
+                console.log(err);
                 return res.status(500).json({ message: 'Failed to create blog' });
                 }
+                console.log('Blog created successfully');
                 return res.status(201).json({ message: 'Blog created successfully' });
                 });
+            } catch (error) {
+                console.error(error);
+                return res.status(500).json({ message: 'Internal Server Error' });
+                }
  });
 
 app.listen(port, () => {
