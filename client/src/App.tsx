@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react'
 import './App.css'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import axios from 'axios';
-import Login from '../Pages/login'
-import Signup from '../Pages/signup'
-import Navbar from '../components/nabvar'
-import Home from '../Pages/Home';
-import Footer from '../components/footer';
-import Create_blog from '../Pages/create_blog';
-// import Blogs from '../Pages/Blog';
+import Login from './Pages/login'
+import Signup from './Pages/signup'
+import Navbar from './Componentsforpage/nabvar'
+import Home from './Pages/Home';
+import Footer from './Componentsforpage/footer';
+import Create_blog from './Pages/create_blog';
+import Blogs from './Pages/Blog';
+import Account from './Pages/Account';
+import Openblog from './Pages/openblog';
 
 function App() {
   const location = useLocation();
@@ -34,6 +36,9 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/create_blog" element={<Create_blog />} />
+        <Route path="/blog" element={<Blogs />} />
+        <Route path="/account" element={<Account />} />
+        <Route path="/openblog/:id" element={<Openblog />} />
       </Routes>
       {!hideNavbarAndFooter && <Footer />}
     </div>
