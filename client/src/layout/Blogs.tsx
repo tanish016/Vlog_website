@@ -1,15 +1,15 @@
 import Navbar from "../Componentsforpage/nabvar";
 import Footer from '../Componentsforpage/footer';
-import Home from '../Pages/Home';
+import Blogs from '../Pages/Blog';
 
-const HomeLayout = () => {
+const BlogsLayout = () => {
     return (
         <>
             <Navbar />
-            <Home />
+            <Blogs />
             <Footer />
         </>
     );
 };
 
-export default HomeLayout;
+export default BlogsLayout;

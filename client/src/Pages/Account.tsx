@@ -1,56 +1,155 @@
-import React,{ useState, useEffect } from 'react';
-import  axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
+import { Textarea } from "@/components/ui/textarea"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { User, Mail, Globe } from "lucide-react"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogFooter
+} from "@/components/ui/dialog";
 
-const account=()=>{
-    const [data,setData]=useState({
-        username:'',
-        email:'',
-        password:'',
-        phone:'',
-        address:'',
-        city:'',
-        state:'',
-        zip:''
-    });
 
-    useEffect(()=>{
-        const fetchAccount=async()=>{
-            try{
-                const response=await axios.get('/api/account');
+const account = () => {
+    const [profile, setProfile] = useState({
+        name: "",
+        email: "",
+        role: "",
+        username: "Not applicable right now",
+        website: "www.xyz.com",
+        bio: "Product designer and developer based in New York.",
+        image: '',
+    })
+
+    useEffect(() => {
+        const fetchAccount = async () => {
+            try {
+                const response = await axios.get('/api/account',{ withCredentials: true });
                 console.log(response.data);
-                setData(response.data);
-            }catch(error){
+                setProfile(response.data);
+            } catch (error) {
                 console.error(error);
             }
         };
         fetchAccount();
     }
-    ,[]);
+        , []);
 
-    return(
-    <div className='flex flex-row justify-between'>
+    return (
+        <div className='container w-11/12 mx-auto my-8'>
+            <h1 className='text-3xl font-bold mb-6'>Account Settings</h1>
 
-        <div className='flex flex-col w-1/4'>
-            <h1 className='text-2xl font-serif underline text-center'>Account Information</h1>
-            <p className='text-lg font-serif'>Username: </p>
-            <p className='text-lg font-serif'>Email: </p>
-            <p className='text-lg font-serif'>Password: </p>
-            <p className='text-lg font-serif'>Phone Number: </p>
-            <p className='text-lg font-serif'>Address: </p>
-            <p className='text-lg font-serif'>City: </p>
-            <p className='text-lg font-serif'>State: </p>
-            <p className='text-lg font-serif'>Zip Code: </p>
-
-            <div className='flex flex-row justify-between'>
-                <button className='bg-blue-950 border-2 rounded-md text-white text-lg font-serif'>Edit</button>
-                <button className='bg-blue-950 text-white border-2 rounded-md text-lg font-serif'>Delete</button>
+            <div className='flex items-center gap-4 mb-8'>
+                <Avatar className='h-20 w-20'>
+                    <AvatarImage src='' alt={profile.image} />
+                    <AvatarFallback>{profile.name}</AvatarFallback>
+                </Avatar>
+                <div>
+                    <h2 className='text-xl font-semibold'>{profile.name}</h2>
+                    <p className='text-muted-foreground'>{profile.email}</p>
+                    <h2 className='text-muted-foreground font-bold hover:text-[#331919fc]'>Role: {profile.role} </h2>
+                </div>
             </div>
-        </div>
 
-        <div className='flex flex-col'>
-            <h1 className='text-2xl font-serif underline text-center mr-10'>Your Information</h1>
+
+            <form>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Profile Information</CardTitle>
+                        <CardDescription>Update your profile information.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-3">
+                            <Label htmlFor="name" className=' font-bold'>Full Name</Label>
+                            <div className="flex items-center gap-2">
+                                <User className="h-4 w-4 text-muted-foreground" />
+                                <Input id="name" name="name" value={profile.name} />
+                            </div>
+                        </div>
+
+                        <div className="space-y-3 mt-3">
+                            <Label htmlFor="email" className=' font-bold'>Email</Label>
+                            <div className="flex items-center gap-2">
+                                <Mail className="h-4 w-4 text-muted-foreground" />
+                                <Input id="email" name="email" value={profile.email} disabled />
+                            </div>
+                            <p className="text-sm text-muted-foreground cursor-default hover:font-bold">Your email cannot be changed.</p>
+                        </div>
+
+                        <div className="space-y-3 mt-4">
+                            <Label htmlFor="username" className='font-bold'>Username</Label>
+                            <Input id="username" name="username" value={profile.username} disabled />
+                        </div>
+
+                        <div className="space-y-3 mt-4">
+                            <Label htmlFor="website" className='font-bold'>Website</Label>
+                            <div className="flex items-center gap-2">
+                                <Globe className="h-4 w-4 text-muted-foreground" />
+                                <Input id="website" name="website" value={profile.website} />
+                            </div>
+                        </div>
+
+                        <div className="space-y-3 mt-4">
+                            <Label htmlFor="bio" className='font-bold'>Bio</Label>
+                            <Textarea id="bio" name="bio" value={profile.bio} rows={3} />
+                            <p className="text-sm text-muted-foreground">Brief description for your profile.</p>
+                        </div>
+                    </CardContent>
+                    <CardFooter className="flex justify-between">
+                        <Button variant="outline">
+                            Update
+                        </Button>
+                        <Button variant="outline" >
+                            Cancel
+                        </Button>
+
+                    </CardFooter>
+                </Card>
+            </form>
+
+            <Separator className="my-8" />
+            <div className='flex justify-center items-center'>
+            <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">Change Password</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Change Password</DialogTitle>
+          <DialogDescription>
+            Make changes to your profile here. Click save when you're done.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Old:
+            </Label>
+            <Input id="oldpasswod" placeholder='old password' className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              New:
+            </Label>
+            <Input id="newpassword" placeholder='new password' className="col-span-3" />
+          </div>
         </div>
+        <DialogFooter>
+          <Button type="submit">Update Password</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
     </div>
+        </div>
     )
 }
 

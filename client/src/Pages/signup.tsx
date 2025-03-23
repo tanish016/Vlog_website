@@ -1,10 +1,12 @@
 import React, {useState} from "react";
 import { Link , useNavigate} from "react-router-dom";
 import axios from "axios";
+import  useAuthRedirect  from '../hooks/userAuth.tsx';
 
 
 const Signup = () => {
   const Navigate = useNavigate();
+  useAuthRedirect();
   const [form, setForm] = useState({
     name: '',
     email: '',

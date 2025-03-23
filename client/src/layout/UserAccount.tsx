@@ -1,15 +1,15 @@
 import Navbar from "../Componentsforpage/nabvar";
 import Footer from '../Componentsforpage/footer';
-import Home from '../Pages/Home';
+import Account from "../Pages/Account";
 
-const HomeLayout = () => {
+const UserAccount = () => {
     return (
-        <>
+        <div>
             <Navbar />
-            <Home />
+            <Account />
             <Footer />
-        </>
-    );
-};
+        </div>
+    )
+}
 
-export default HomeLayout;
+export default UserAccount;

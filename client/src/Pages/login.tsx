@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
+import { useSession } from "../context/session";
+import useAuthRedirect from "@/hooks/userAuth.tsx";
 
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const Navigate = useNavigate();
+  const { login } = useSession();
+
+  useAuthRedirect();
 
 
   const handle_login = async () => { 
@@ -14,21 +19,15 @@ const Login = () => {
       alert("Please fill all the fields");
       return;
     }
-    try {
+     try {
       console.log("Hello");
-           let resp= await axios.post('/api/login', {email, password});
-           console.log("Hi");
-           resp=resp.data;           
-           if(resp.status){
-            alert("Logged in successfully")
-            Navigate("/");
-           }else{
-            alert("Bad credentials");
-           }
-    }catch (error) {
+      await login(email, password);
+      alert("Logged in successfully");
+      Navigate("/");
+    } catch (error) {
       alert("Bad credentials");
       console.log(error);
-  }
+    }
 };
 
   const handleSubmit = (e: React.FormEvent) => {

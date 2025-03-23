@@ -1,38 +1,21 @@
-import React, { useEffect, useState } from 'react'
 import './App.css'
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
-import axios from 'axios';
+import { BrowserRouter, Routes, Route,  } from 'react-router-dom'
 import Login from './Pages/login'
 import Signup from './Pages/signup'
-import Navbar from './Componentsforpage/nabvar'
-import Home from './Pages/Home';
-import Footer from './Componentsforpage/footer';
-import Create_blog from './Pages/create_blog';
-import Blogs from './Pages/Blog';
-import Account from './Pages/Account';
-import Openblog from './Pages/openblog';
+import Home_layout from './layout/home';
+import Create_blog from './layout/BlogCreate';
+import Blogs from './layout/Blogs';
+import Account from './layout/UserAccount';
+import Openblog from './layout/BlogOpened';
+import { SessionProvider } from './context/session';
 
 function App() {
-  const location = useLocation();
-  const hideNavbarAndFooter = location.pathname === '/login' || location.pathname === '/signup';
-  const [data, setData] = useState('');
-
-  useEffect(() => {
-    axios.get('/api/data')
-      .then(response => {
-        setData(response.data.message);
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  }, []);
-
   return (
     <div>
-      {data}
-      {!hideNavbarAndFooter && <Navbar />}
+     <BrowserRouter>
+     <SessionProvider>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home_layout />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/create_blog" element={<Create_blog />} />
@@ -40,17 +23,12 @@ function App() {
         <Route path="/account" element={<Account />} />
         <Route path="/openblog/:id" element={<Openblog />} />
       </Routes>
-      {!hideNavbarAndFooter && <Footer />}
+      </SessionProvider>
+      </BrowserRouter>
     </div>
   )
 }
 
-function AppWrapper() {
-  return (
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  );
-}
 
-export default AppWrapper;
+
+export default App;

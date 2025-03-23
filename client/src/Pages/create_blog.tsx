@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+// filepath: e:\Personal\Projects\VLOG_WEBSITE\client\src\Pages\create_blog.tsx
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useSession } from '../context/session';
 
 const CreateBlog = () => {
   const navigate = useNavigate();
+  const { user, loading } = useSession();
   const [form, setForm] = useState({
     title: '',
     content: '',
@@ -11,6 +14,21 @@ const CreateBlog = () => {
     date: '',
     image: null,
   });
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/login');
+    }
+  }, [loading, user, navigate]);
+
+  useEffect(() => {
+    if (user) {
+      setForm((prevForm) => ({
+        ...prevForm,
+        author: user.email,
+      }));
+    }
+  }, [user]);
 
   const handleChange = (e) => {
     setForm({
@@ -30,37 +48,15 @@ const CreateBlog = () => {
     }
   };
 
-  // const handleSubmit = async () => {
-  //   const { title, content, author, date } = form;
-  //   if (title === '' || content === '' || author === '' || date === '') {
-  //     alert('Please fill all the details');
-  //     return;
-  //   }
-  //   try {
-  //     console.log('Creating blog...');
-  //     const resp = await axios.post("/api/create_blog", form);
-  //     if (resp) {
-  //       console.log('Blog created successfully. Navigating...');
-  //         alert('Blog created successfully');
-  //         navigate('/');
-  //     } else {
-  //       alert('Failed to create blog. Status code: ' + resp);
-  //     }
-  //   } catch (error){
-  //     console.log('Server error:', error);
-  //     alert('Server error. Check console for details.');
-  //   }
-  // };
-
   const handleSubmit = async (e) => {
-    // e.preventDefault(); // Prevent default form submission behavior
+    e.preventDefault();
     const { title, content, author, date, image } = form;
-  
+
     if (title === '' || content === '' || author === '' || date === '') {
       alert('Please fill all the details');
       return;
     }
-  
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', content);
@@ -69,14 +65,12 @@ const CreateBlog = () => {
     if (image) {
       formData.append('image', image);
     }
-  
-    const response = await axios.post("/api/create_blog", formData);
+
     try {
-      // const res=response.data
+      const response = await axios.post("/api/create_blog", formData, { withCredentials: true });
       if (response) {
         console.log('Blog created successfully. Navigating...');
         alert('Blog created successfully');
-        console.log('Navigating to home...');
         navigate('/');
       } else {
         console.log('Failed to create blog. Status code:', response.status);
@@ -87,27 +81,10 @@ const CreateBlog = () => {
       alert('Server error. Check console for details.');
     }
   };
-  
 
-   const handleform = (e) => {
-    e.preventDefault();
-  //   // console.log(form);
-    // const  resp=axios.post("/api/create_blog", form);
-    // if(resp.status){
-    //   alert('Form submitted successfully');
-    //   navigate('/');
-    // }
-   
-    // if(form.title != '' || form.content != '' || form.author != '' || form.date != ''){
-    //   alert('Form submitted successfully');
-    //   navigate('/');
-    // }
-    // else{
-    //   alert('Form submitted successfully');
-    //   navigate('/');
-    // }
-
-   };
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className='bg-blue-50 min-h-full min-w-auto'>
@@ -116,7 +93,7 @@ const CreateBlog = () => {
       </h1>
       <div className="flex justify-center items-center">
         <div className="bg-white rounded-lg shadow-md w-200 p-6 m-8">
-          <form onSubmit={handleform}>
+          <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">Title:</label>
               <input
@@ -150,6 +127,7 @@ const CreateBlog = () => {
                 placeholder="Author"
                 value={form.author}
                 onChange={handleChange}
+                disabled
               />
             </div>
             <div className="mb-4">
@@ -182,7 +160,6 @@ const CreateBlog = () => {
             </div>
             <div className='flex justify-center items-center pt-5'>
               <button
-              onClick={handleSubmit}
                 className="relative rounded-2xl bg-blue-500 px-4 py-2 font-serif font-bold text-white transition-colors duration-300 ease-linear before:absolute before:right-1/2 before:top-1/2 before:-z-[1] before:h-3/4 before:w-2/3 before:origin-bottom-left before:-translate-y-1/2 before:translate-x-1/2 before:animate-ping before:rounded-full before:bg-blue-500 hover:bg-blue-700 hover:before:bg-blue-700"
                 type="submit"
               >
