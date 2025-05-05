@@ -22,14 +22,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import cn from "classnames";
-import { Heart, Share2, MessageSquare } from 'lucide-react';
+import { Heart, Share2, MessageSquare } from "lucide-react";
 
 const OpenBlog = () => {
   const { id } = useParams();
-  const [blog, setBlog] = useState(null);
-  const [user, setUser] = useState(null);
-  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+
+  const [blog, setBlog] = useState({
+    _id: "",
+    title: "",
+    content: "",
+    date: "",
+    author: "",
+    image: null,
+  });
+
+  const [user, setUser] = useState({
+    username: "",
+    role: "",
+  });
+
+  const [open, setOpen] = useState(false);
+  const [imageError, setImageError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -70,23 +84,22 @@ const OpenBlog = () => {
 
   const ProfileForm = ({ className }: React.ComponentProps<"form">) => {
     const [form, setForm] = useState({
-      title: blog?.title || "",
-      content: blog?.content || "",
+      title: blog.title,
+      content: blog.content,
       image: null,
     });
-    const [imagePreview, setImagePreview] = useState(blog?.imageUrl || null);
-    const [image, setImage] = useState(null);
-    const [imageError, setImageError] = useState(null);
+
+    const [imagePreview, setImagePreview] = useState<string | null>(
+      blog.image || null
+    );
 
     useEffect(() => {
-      if (blog) {
-        setForm({
-          title: blog.title,
-          content: blog.content,
-          image: null,
-        });
-        setImagePreview(blog.imageUrl);
-      }
+      setForm({
+        title: blog.title,
+        content: blog.content,
+        image: null,
+      });
+      setImagePreview(blog.image);
     }, [blog]);
 
     const handleChange = (
@@ -100,12 +113,10 @@ const OpenBlog = () => {
       const file = e.target.files && e.target.files[0];
       if (file) {
         if (file.size > 1024 * 1024) {
-          // 1MB
           setImageError("Image size should be less than 1MB");
           return;
         }
         setImageError(null);
-        setImage(file);
         setForm((prev) => ({ ...prev, image: file }));
 
         const reader = new FileReader();
@@ -136,8 +147,7 @@ const OpenBlog = () => {
 
         alert("Blog updated successfully!");
         setOpen(false);
-        window.location.reload();
-        //navigate(`/blog/${id}`);
+        setBlog((prev) => ({ ...prev, ...form }));
       } catch (error) {
         console.error("Error updating blog:", error);
         alert("Failed to update blog");
@@ -158,7 +168,7 @@ const OpenBlog = () => {
         </div>
         <div className="grid gap-2">
           <Label htmlFor="username">Username</Label>
-          <Input id="username" value={blog?.author} disabled />
+          <Input id="username" value={blog.author} disabled />
         </div>
         <div className="grid gap-2 w-full">
           <Label htmlFor="content">Content</Label>
@@ -189,9 +199,12 @@ const OpenBlog = () => {
     );
   };
 
-  if (!blog) {
+  if (!blog.title) {
     return <p>Loading...</p>;
   }
+
+  const canEditOrDelete =
+    user.role === "admin" || blog.author === user.username;
 
   return (
     <div className="container mx-auto p-4 cursor-default">
@@ -203,64 +216,44 @@ const OpenBlog = () => {
         <CardContent>
           {blog.content}
           {blog.image && (
-            <>
-              {/* Mobile: full width, smaller height */}
-              <img
-                src={blog.image}
-                alt={blog.title}
-                className="block md:hidden w-full h-48 object-cover rounded mb-4"
-              />
-              {/* Desktop: centered, larger, fixed width/height */}
-              <img
-                src={blog.image}
-                alt={blog.title}
-                className="hidden md:block mx-auto w-2/3 h-96 object-cover rounded mb-4"
-              />
-            </>
+            <img
+              src={blog.image}
+              alt={blog.title}
+              className="w-full h-48 object-cover rounded mb-4"
+            />
           )}
         </CardContent>
         <CardFooter>{new Date(blog.date).toLocaleDateString()}</CardFooter>
-        {user && (user.role === "admin" || blog.author === user.username) && (
-          <>
-            <div className="flex justify-center space-x-9 p-4">
-              <Button
-                onClick={handleDelete}
-                className="w-1/9 border-2 shadow-2xl shadow-black"
-                variant="outline"
-              >
-                Delete
-              </Button>
-              <div className="w-1/8">
-                <Dialog open={open} onOpenChange={setOpen}>
-                  <DialogTrigger asChild>
-                    <Button variant="outline">Edit</Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                      <DialogTitle>Edit blog</DialogTitle>
-                      <DialogDescription>
-                        Make changes to your blog here. Click save when you're
-                        done.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <ProfileForm />
-                  </DialogContent>
-                </Dialog>
-              </div>
-            </div>
-          </>
+        {canEditOrDelete && (
+          <div className="flex justify-center space-x-9 p-4">
+            <Button
+              onClick={handleDelete}
+              className="w-1/9 border-2 shadow-2xl shadow-black"
+              variant="outline"
+            >
+              Delete
+            </Button>
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline">Edit</Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Edit blog</DialogTitle>
+                  <DialogDescription>
+                    Make changes to your blog here. Click save when you're done.
+                  </DialogDescription>
+                </DialogHeader>
+                <ProfileForm />
+              </DialogContent>
+            </Dialog>
+          </div>
         )}
-         <div className="flex  gap-6 justify-end items-center mr-4">
-        <div>
-          <Heart/>
+        <div className="flex gap-6 justify-end items-center mr-4">
+          <Heart />
+          <MessageSquare />
+          <Share2 />
         </div>
-        <div>
-          <MessageSquare/>
-        </div>
-        <div>
-          <Share2/>
-        </div>
-      </div>
       </Card>
     </div>
   );

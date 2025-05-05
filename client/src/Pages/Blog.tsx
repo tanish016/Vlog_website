@@ -1,10 +1,19 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Heart, Share2, MessageSquare } from 'lucide-react';
 
+interface Blog {
+  _id: string;
+  title: string;
+  content: string;
+  date: string;
+  author: string;
+  image?: string;
+}
+
 const Blogs = () => {
-  const [blogs, setBlogs] = useState([]);
+  const [blogs, setBlogs] = useState<Blog[]>([])
   const navigate = useNavigate();
   const [likeCount, setLikeCount] = useState(0);
 
@@ -21,7 +30,7 @@ const Blogs = () => {
     fetchBlogs();
   }, []);
 
-  const truncateContent = (content, wordLimit) => {
+  const truncateContent = (content: string, wordLimit: number) => {
     const words = content.split(' ');
     if (words.length > wordLimit) {
       return words.slice(0, wordLimit).join(' ') + '...';
@@ -29,7 +38,7 @@ const Blogs = () => {
     return content;
   };
 
-  const handleBlogClick = (id) => {
+  const handleBlogClick = (id: string) => {
     navigate(`/openblog/${id}`);
   };
 

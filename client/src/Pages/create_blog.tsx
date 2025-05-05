@@ -1,14 +1,21 @@
-// filepath: e:\Personal\Projects\VLOG_WEBSITE\client\src\Pages\create_blog.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useSession } from '../context/session';
 import { Button } from '@/components/ui/button';
 
+interface BlogForm {
+  title: string;
+  content: string;
+  author: string;
+  date: string;
+  image: File | null; // Use `File` for the image type
+}
+
 const CreateBlog = () => {
   const navigate = useNavigate();
   const { user, loading } = useSession();
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<BlogForm>({
     title: '',
     content: '',
     author: '',
@@ -17,7 +24,6 @@ const CreateBlog = () => {
   });
 
   const [submitting, setSubmitting] = useState(false);
-  
 
   const getCurrentDate = () => {
     const date = new Date();
@@ -43,30 +49,33 @@ const CreateBlog = () => {
     }
   }, [user]);
 
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setForm((prevForm) => ({
+      ...prevForm,
+      [name]: value,
+    }));
   };
 
-  const handleFileChange = (e) => {
-    setForm({
-      ...form,
-      image: e.target.files[0],
-    });
-    if (e.target.files[0]) {
-      console.log('Image uploaded:', e.target.files[0].name);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      setForm((prevForm) => ({
+        ...prevForm,
+        image: file,
+      }));
+      console.log('Image uploaded:', file.name);
       alert('Image uploaded successfully');
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
+
     const { title, content, author, date, image } = form;
 
-    if (title === '' || content === '' || author === '' || date === '') {
+    if (!title || !content || !author || !date) {
       alert('Please fill all the details');
       setSubmitting(false);
       return;
@@ -82,18 +91,23 @@ const CreateBlog = () => {
     }
 
     try {
-      const response = await axios.post("/api/create_blog", formData, { withCredentials: true });
-      if (response) {
+      const response = await axios.post('/api/create_blog', formData, { withCredentials: true });
+      if (response.status === 200 || response.status === 201) {
         console.log('Blog created successfully. Navigating...');
         alert('Blog created successfully');
         navigate('/');
       } else {
-        console.log('Failed to create blog. Status code:', response.status);
+        console.error('Failed to create blog. Status code:', response.status);
         alert('Failed to create blog. Status code: ' + response.status);
       }
-    } catch (error) {
-      console.error('Server error:', error);
-      alert('Server error. Check console for details.');
+    } catch (error: any) {
+      if (error.response) {
+        console.error('Server error:', error.response.data);
+        alert(`Server error: ${error.response.data.message || 'Check console for details.'}`);
+      } else {
+        console.error('Unexpected error:', error.message);
+        alert('Unexpected error. Check console for details.');
+      }
     } finally {
       setSubmitting(false);
     }
@@ -104,15 +118,17 @@ const CreateBlog = () => {
   }
 
   return (
-    <div className='bg-blue-50 min-h-full min-w-auto'>
-      <h1 className='text-2xl font-bold text-center pr-2 mt-2'>
+    <div className="bg-blue-50 min-h-full min-w-auto">
+      <h1 className="text-2xl font-bold text-center pr-2 mt-2">
         Create Your Own Blog Here
       </h1>
       <div className="flex justify-center items-center">
         <div className="bg-white rounded-lg shadow-md w-200 p-6 m-8">
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">Title:</label>
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
+                Title:
+              </label>
               <input
                 className="shadow appearance-none border rounded w-full h-15 font-mono py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="title"
@@ -124,7 +140,9 @@ const CreateBlog = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="content">Content:</label>
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="content">
+                Content:
+              </label>
               <textarea
                 className="shadow appearance-none border rounded w-full h-100 font-mono py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="content"
@@ -135,7 +153,9 @@ const CreateBlog = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="author">Author:</label>
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="author">
+                Author:
+              </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 font-mono text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="author"
@@ -143,25 +163,26 @@ const CreateBlog = () => {
                 type="text"
                 placeholder="Author"
                 value={form.author}
-                onChange={handleChange}
                 disabled
               />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="date">Date:</label>
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="date">
+                Date:
+              </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight font-mono focus:outline-none focus:shadow-outline"
                 id="date"
                 name="date"
                 type="date"
-                placeholder="Date"
                 value={form.date}
-                onChange={handleChange}
                 disabled
               />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-4" htmlFor="image">Image:</label>
+              <label className="block text-gray-700 text-sm font-bold mb-4" htmlFor="image">
+                Image:
+              </label>
               <input
                 className="hidden"
                 id="image"
@@ -176,18 +197,30 @@ const CreateBlog = () => {
                 Upload Image
               </label>
             </div>
-            <div className='flex justify-center items-center pt-5'>
-              <Button type="submit" className='w-full' disabled={submitting}>
+            <div className="flex justify-center items-center pt-5">
+              <Button type="submit" className="w-full" disabled={submitting}>
                 {submitting ? (
                   <span className="flex items-center justify-center">
                     <svg className="animate-spin h-5 w-5 mr-2 text-white" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v8z"
+                      />
                     </svg>
                     Creating...
                   </span>
                 ) : (
-                  "Create Blog"
+                  'Create Blog'
                 )}
               </Button>
             </div>

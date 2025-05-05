@@ -1,4 +1,3 @@
-import React from "react";
 import Bg_vedio from '../vedio/winter-town-buildings.mp4';
 import image from '../Images/Japan.jpg';
 import { Link } from 'react-router-dom';
