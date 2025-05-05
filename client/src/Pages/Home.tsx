@@ -59,7 +59,7 @@ const home = () =>{
           {/*All Post in a grid*/}
           <div>
             <h1 className="text-lg md:text-2xl font-bold text-center mt-9 hover:text-gray-800 cursor-default underline m-10">
-                Recent Posts!
+                Recent Post
                 </h1>
           </div>
         </div>
