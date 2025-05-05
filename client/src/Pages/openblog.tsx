@@ -24,11 +24,26 @@ import { Textarea } from "@/components/ui/textarea";
 import cn from "classnames";
 import { Heart, Share2, MessageSquare } from "lucide-react";
 
+interface Blog {
+  _id: string;
+  title: string;
+  content: string;
+  date: string;
+  author: string;
+  image: string | null;
+}
+
+interface FormState {
+  title: string;
+  content: string;
+  image: File | null;
+}
+
 const OpenBlog = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [blog, setBlog] = useState({
+  const [blog, setBlog] = useState<Blog>({
     _id: "",
     title: "",
     content: "",
@@ -83,15 +98,13 @@ const OpenBlog = () => {
   };
 
   const ProfileForm = ({ className }: React.ComponentProps<"form">) => {
-    const [form, setForm] = useState({
+    const [form, setForm] = useState<FormState>({
       title: blog.title,
       content: blog.content,
       image: null,
     });
 
-    const [imagePreview, setImagePreview] = useState<string | null>(
-      blog.image || null
-    );
+    const [imagePreview, setImagePreview] = useState<string | null>(blog.image);
 
     useEffect(() => {
       setForm({
@@ -147,7 +160,12 @@ const OpenBlog = () => {
 
         alert("Blog updated successfully!");
         setOpen(false);
-        setBlog((prev) => ({ ...prev, ...form }));
+        setBlog({ 
+          ...blog, 
+          title: form.title, 
+          content: form.content, 
+          image: form.image ? URL.createObjectURL(form.image) : blog.image 
+        });
       } catch (error) {
         console.error("Error updating blog:", error);
         alert("Failed to update blog");
