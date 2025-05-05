@@ -1,4 +1,4 @@
-import Bg_vedio from '../../../client/src/assets/winter-town-buildings.mp4';
+import Bg_vedio from '../assets/winter-town-buildings.mp4';
 import image from '../assets/Japan.jpg';
 import { Link } from 'react-router-dom';
 
