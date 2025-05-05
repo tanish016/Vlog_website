@@ -1,5 +1,5 @@
-import Bg_vedio from '../vedio/winter-town-buildings.mp4';
-import image from '../Images/Japan.jpg';
+import Bg_vedio from '@/assets/winter-town-buildings.mp4';
+import image from '@/assets/Japan.jpg';
 import { Link } from 'react-router-dom';
 
 const home = () =>{
