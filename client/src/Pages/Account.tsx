@@ -30,7 +30,7 @@ const Account = () => {
     });
 
     const [form, setForm] = useState(profile);
-    const [imageFile, setImageFile] = useState(null);
+    const [imageFile, setImageFile] = useState<File | null>(null);
 
     useEffect(() => {
         const fetchAccount = async () => {
@@ -45,9 +45,9 @@ const Account = () => {
         fetchAccount();
     }, []);
 
-    const handleChange = (e) => {
-        const { name, value, type, files } = e.target;
-        if (type === 'file') {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value, type, files } = e.target as HTMLInputElement;
+        if (type === 'file' && files && files.length > 0) {
             setImageFile(files[0]); // Store the selected image file
         } else {
             setForm({
@@ -79,7 +79,7 @@ const Account = () => {
         }
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (imageFile) {
             await handleImageUpload();
@@ -100,7 +100,7 @@ const Account = () => {
 
             <div className='flex items-center gap-4 mb-8'>
                 <Avatar className='h-20 w-20'>
-                    <AvatarImage src={form.image || profile.image} alt={form.name || profile.name} />
+                    <AvatarImage src={(form.image || profile.image) ?? undefined} alt={form.name || profile.name} />
                     <AvatarFallback>{ profile.name}</AvatarFallback>
                 </Avatar>
                 <div>
