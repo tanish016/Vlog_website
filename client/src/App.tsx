@@ -2,12 +2,12 @@ import './App.css'
 import { BrowserRouter, Routes, Route,  } from 'react-router-dom'
 import Login from './Pages/login'
 import Signup from './Pages/signup'
-import HomeLayout from './layout/Home.tsx';
-import Create_blog from './layout/BlogCreate';
-import Blogs from './layout/Blogs';
-import Account from './layout/UserAccount';
-import Openblog from './layout/BlogOpened';
-import { SessionProvider } from './context/session';
+import HomeLayout from './layout/Home.tsx'
+import Create_blog from './layout/BlogCreate'
+import Blogs from './layout/Blogs'
+import Account from './layout/UserAccount'
+import Openblog from './layout/BlogOpened'
+import { SessionProvider } from './context/session'
 
 function App() {
   return (
