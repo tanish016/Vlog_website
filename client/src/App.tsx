@@ -2,7 +2,7 @@ import './App.css'
 import { BrowserRouter, Routes, Route,  } from 'react-router-dom'
 import Login from './Pages/login'
 import Signup from './Pages/signup'
-import Home_layout from './layout/Home';
+import HomeLayout from './layout/Home';
 import Create_blog from './layout/BlogCreate';
 import Blogs from './layout/Blogs';
 import Account from './layout/UserAccount';
@@ -15,7 +15,7 @@ function App() {
      <BrowserRouter>
      <SessionProvider>
       <Routes>
-        <Route path="/" element={<Home_layout />} />
+        <Route path="/" element={<HomeLayout />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/create_blog" element={<Create_blog />} />
