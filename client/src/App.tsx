@@ -2,7 +2,7 @@ import './App.css'
 import { BrowserRouter, Routes, Route,  } from 'react-router-dom'
 import Login from './Pages/login'
 import Signup from './Pages/signup'
-import Home_layout from './layout/home';
+import Home_layout from './layout/Home';
 import Create_blog from './layout/BlogCreate';
 import Blogs from './layout/Blogs';
 import Account from './layout/UserAccount';

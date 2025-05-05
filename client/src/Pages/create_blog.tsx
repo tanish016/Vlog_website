@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useSession } from '../context/session';
+import { Button } from '@/components/ui/button';
 
 const CreateBlog = () => {
   const navigate = useNavigate();
@@ -15,6 +16,17 @@ const CreateBlog = () => {
     image: null,
   });
 
+  const [submitting, setSubmitting] = useState(false);
+  
+
+  const getCurrentDate = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   useEffect(() => {
     if (!loading && !user) {
       navigate('/login');
@@ -25,7 +37,8 @@ const CreateBlog = () => {
     if (user) {
       setForm((prevForm) => ({
         ...prevForm,
-        author: user.email,
+        author: user.username,
+        date: getCurrentDate(),
       }));
     }
   }, [user]);
@@ -50,10 +63,12 @@ const CreateBlog = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
     const { title, content, author, date, image } = form;
 
     if (title === '' || content === '' || author === '' || date === '') {
       alert('Please fill all the details');
+      setSubmitting(false);
       return;
     }
 
@@ -79,6 +94,8 @@ const CreateBlog = () => {
     } catch (error) {
       console.error('Server error:', error);
       alert('Server error. Check console for details.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -140,6 +157,7 @@ const CreateBlog = () => {
                 placeholder="Date"
                 value={form.date}
                 onChange={handleChange}
+                disabled
               />
             </div>
             <div className="mb-4">
@@ -153,18 +171,25 @@ const CreateBlog = () => {
               />
               <label
                 htmlFor="image"
-                className="hover:brightness-110 hover:animate-pulse font-mono font-bold py-3 px-6 rounded-full bg-gradient-to-r from-blue-500 to-pink-500 text-white ml-10 cursor-pointer"
+                className="hover:brightness-110 hover:animate-pulse font-mono font-bold py-3 px-6 rounded-md bg-gradient-to-r from-blue-500 to-pink-500 text-white ml-10 cursor-pointer"
               >
                 Upload Image
               </label>
             </div>
             <div className='flex justify-center items-center pt-5'>
-              <button
-                className="relative rounded-2xl bg-blue-500 px-4 py-2 font-serif font-bold text-white transition-colors duration-300 ease-linear before:absolute before:right-1/2 before:top-1/2 before:-z-[1] before:h-3/4 before:w-2/3 before:origin-bottom-left before:-translate-y-1/2 before:translate-x-1/2 before:animate-ping before:rounded-full before:bg-blue-500 hover:bg-blue-700 hover:before:bg-blue-700"
-                type="submit"
-              >
-                Create Blog
-              </button>
+              <Button type="submit" className='w-full' disabled={submitting}>
+                {submitting ? (
+                  <span className="flex items-center justify-center">
+                    <svg className="animate-spin h-5 w-5 mr-2 text-white" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                    </svg>
+                    Creating...
+                  </span>
+                ) : (
+                  "Create Blog"
+                )}
+              </Button>
             </div>
           </form>
         </div>

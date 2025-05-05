@@ -8,20 +8,20 @@ const home = () =>{
     const time=today.toLocaleDateString();
     return (
         <div>
-           <video autoPlay loop muted className="absolute w-[100%] h-[100%] object-cover z-[-1]">
+           <video autoPlay loop muted className="absolute w-full h-full object-cover z-[-1]">
             <source src={Bg_vedio} type="video/mp4" />
             </video> 
-            <div className="flex flex-col justify-center h-screen pl-20">
-                <h1 className="text-6xl font-bold">
+            <div className="flex flex-col justify-center h-screen px-4 md:pl-20">
+                <h1 className="text-3xl md:text-6xl font-bold">
                     Create your own Blog
                 </h1>
 
-                <h3 className="text-2xl font-bold mt-2">
+                <h3 className="text-lg md:text-2xl font-bold mt-2">
                     & Share your experience with us
                 </h3>
 
                 
-                <button className="border-2 rounded-2xl w-30 p-3 mt-4 font-bold bg-red-800  hover:bg-blue-500">
+                <button className="border-2 rounded-2xl w-full md:w-30 p-3 mt-4 font-bold bg-red-800  hover:bg-blue-500">
                 <Link to="/create_blog">
                     Create Blog
                     </Link>
@@ -29,24 +29,24 @@ const home = () =>{
                 
             </div>
             <div>
-                <h1 className=" text-2xl font-bold text-center mt-9 hover:text-gray-800 cursor-default underline">
+                <h1 className="text-lg md:text-2xl font-bold text-center mt-9 hover:text-gray-800 cursor-default underline">
                     Welcome! Explore, Discover, and Enjoy: Your journey starts here!
                 </h1>
             </div>
 
           {/* Featured Post */}
-            <div className=" border-2 p-4 rounded-lg shadow-lg w-1/2 h-auto mx-auto bg-stone-200 mt-5">
-                <h1 className="font-bold text-2xl hover:text-gray-600 cursor-default pb-4">
+            <div className="border-2 p-4 rounded-lg shadow-lg w-full md:w-1/2 h-auto mx-auto bg-stone-200 mt-5">
+                <h1 className="font-bold text-xl md:text-2xl hover:text-gray-600 cursor-default pb-4">
                     Featured Post!
                 </h1>
-                <div className="flex">
-                <img src={image} alt="featured post" className="w-1/2 border-2 rounded-md border-transparent"/>
-                <div className="flex ml-4 flex-col justify-center hover:text-blue-400 cursor-default">
-                <h1 className="text-xl font-bold m-2">
+                <div className="flex flex-col md:flex-row">
+                <img src={image} alt="featured post" className="w-full md:w-1/2 border-2 rounded-md border-transparent"/>
+                <div className="flex md:ml-4 flex-col justify-center hover:text-blue-400 cursor-default">
+                <h1 className="text-base md:text-xl font-bold m-2">
                     {time}
                 </h1>
                 
-                <h2 className="text-2xl font-bold">
+                <h2 className="text-lg md:text-2xl font-bold">
                     Best Hikes in Japan
                 </h2>
                 
@@ -59,7 +59,7 @@ const home = () =>{
 
           {/*All Post in a grid*/}
           <div>
-            <h1 className="text-2xl font-bold text-center mt-9 hover:text-gray-800 cursor-default underline m-10">
+            <h1 className="text-lg md:text-2xl font-bold text-center mt-9 hover:text-gray-800 cursor-default underline m-10">
                 Recent Posts!
                 </h1>
           </div>

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Button } from "../components/ui/button";
+import { Heart, Share2, MessageSquare } from 'lucide-react';
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
   const navigate = useNavigate();
+  const [likeCount, setLikeCount] = useState(0);
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -49,14 +50,34 @@ const Blogs = () => {
               <h2 className="text-xl font-bold mb-2">{blog.title}</h2>
               <p className="text-gray-500 mb-2 font-bold underline">Author: {blog.author}</p>
               <p className="text-gray-700 mb-2 hover:text-blue-500">{truncateContent(blog.content, 20)}</p>
-              {blog.imageUrl ? (
-                <img src={blog.imageUrl} alt={blog.title} className="w-full h-auto rounded" />
+              {blog.image ? (
+                <img src={blog.image} alt={blog.title} className="w-full h-auto rounded mb-3" />
               ) : (
-                <p className="text-gray-500 mb-2 font-extrabold">Caution: No image available</p>
+                <p className="text-gray-500 mb-3 font-extrabold">Caution: No image available</p>
               )}
-              <Button>Veiw</Button>
+              <div className="flex gap-2 justify-around border-2 p-2 pointer-events-none relative group">
+
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded px-3 py-1 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                  This is not in use
+                </span>
+                
+                <div className="flex gap-1 ">
+                  <Heart onClick={e => { e.stopPropagation(); setLikeCount(likeCount + 1); }} className="cursor-pointer" />
+                  <span>{likeCount}</span>
+                </div>
+
+                <div>
+                  <MessageSquare />
+                </div>
+
+                <div>
+                  <Share2 />
+                </div>
+
+              </div>
+
             </div>
-            
+
           ))}
         </div>
       )}

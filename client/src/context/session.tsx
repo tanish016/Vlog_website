@@ -41,14 +41,14 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const login = async (email: string, password: string) => {
     try {
       const response = await axios.post('/api/login', { email, password }, { withCredentials: true });
-      if (response.data.status) {
-        setUser(response.data);
+      if (response.data && response.data.status) {
+        setUser(response.data.user);
       } else {
-        alert('Bad credentials');
+        throw new Error('Bad credentials');
       }
     } catch (error) {
-      alert('Bad credentials');
-      console.error(error);
+      console.log(error);
+      throw new Error('Bad credentials');
     }
   };
 
